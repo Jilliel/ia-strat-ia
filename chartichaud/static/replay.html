@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/jquery.js"></script>
+    <script src="/game.js"></script>
+    <script src="/replay.js"></script>
+  </head>
+  
+  <body>
+    <div style="visibility:hidden">
+      <button type="button"  id="nextTurn" />
+    </div>  
+    <div id="top" style="position:fixed; top: 0; left: 0; z-index:999; width: 100%;">
+      <button onClick="draw_list();">STOP REPLAY</button>
+      <div id="gold" class='topcell'> </div>
+      <div id="score" class='topcell'> </div>
+      <select id="speed">
+        <option value="100">Fast</option>
+        <option value="30">Normal</option>
+        <option value="10">Slow</option>
+        <option value="1">Super slow</option>
+        <option value="0">Pause</option>
+      </select>
+    </div>
+    <div id="board">
+    </div>
+    <div id="list">
+      <input type="text" id="filterList" oninput="draw_list();" placeholder="Search"/><br/>
+      <div id="listContent">
+      </div>
+    </div>
+
+    
+  </body>
+</html>

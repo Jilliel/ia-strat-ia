@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/jquery.js"></script>
+    <script src="/game.js"></script>
+    <script> window.addEventListener("load", function () { init_player(); } )</script> 
+  </head>
+  
+  <body>
+    <div id="top"> 
+      <div id="gold" class='topcell'> </div>
+      <button type="button" onClick="nextTurn();" id="nextTurn" value="nextTurn" style='height:60px; font-size:16'>
+        <h1>NEXT</h1>       
+      </button>
+      <button type="button" onClick="autofarm();" id="nextTurn" value="nextTurn" style='height:60px; font-size:16'>
+        <h1>AUTO</h1>       
+      </button>
+      <button type="button" onClick="farm();" value="Farm">
+        <img src='gold.png' height='60px' width='60px' \>
+      </button>
+      <button type="button" onClick="recruit_unit('C');" value="Recruit Civil">
+        <img src='ac.png' height='60px' width='60px' \>
+      </button>
+      <button type="button" onClick="recruit_unit('M');" value="Recruit Military">
+        <img src='am.png' height='60px' width='60px' \>
+      </button>
+      <button type="button" onClick="build();" value="Build">
+        <img src='ab.png' height='60px' width='60px' \>
+      </button>
+      <div id="score" class='topcell'> </div>
+    </div>
+    <div id="board">
+    </div>
+
+    
+  </body>
+</html>
