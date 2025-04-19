@@ -30,21 +30,21 @@ class AbstractInterface(ABC):
     """
 
     @abstractmethod
-    def build(self, pos: position, unit: str) -> bool:
+    def build(self, pos: position, unit: str) -> None:
         """
         Crée une unité.
         """
         pass
     
     @abstractmethod
-    def move(self, pos: position, newpos: position, unit: str) -> bool:
+    def move(self, pos: position, newpos: position, unit: str) -> None:
         """
         Déplace une unité.
         """
         pass
     
     @abstractmethod
-    def farm(self, pos: position) -> bool:
+    def farm(self, pos: position) -> None:
         """
         Récupère de l'or avec un citoyen.
         """
