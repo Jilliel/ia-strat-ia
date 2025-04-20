@@ -179,6 +179,9 @@ class AbstractBot(ABC):
                 unitcase = unitmap[i][j]
                 if len(unitcase) == 0:
                     continue
+                # gold mine
+                if unitcase['G'] > 0:
+                    self.mines[pos] = unitcase['G']
                 # own units
                 self.militaries[player][pos] = unitcase[player]['M']
                 self.buildings[player][pos] = unitcase[player]['B']
