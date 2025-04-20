@@ -2,7 +2,7 @@
 
 ## Présentation
 
-Ce projet vise à créer une intelligence artificielle de type machine learning pour le jeu Chartichaud, disponible sur ce [insert link here]()
+Ce projet vise à créer une intelligence artificielle de type machine learning pour le jeu Chartichaud, créé et rendu disponible sur ce [git](https://gitlab.telecom-paris.fr/louis.jachiet/chartichaud) par notre encadrant, M.Jachiet.
 
 ## Sources
 
