@@ -80,7 +80,7 @@ def giveView(player,token):
         return jsonify(game.giveAllView())
     assert(tokenOf[player]==token)
     check_alive()
-    return game.giveViewPlayer(player)
+    return jsonify(game.giveViewPlayer(player))
 
 @app.route('/move/<player>/<kind>/<int:y>/<int:x>/<int:ny>/<int:nx>/<token>')
 def move(player,kind,y,x,ny,nx,token):

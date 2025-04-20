@@ -1,15 +1,6 @@
 from math import ceil
-from flask import Flask
-from flask import jsonify
 import random
 from collections import defaultdict
-from flask import send_from_directory
-import string
-import json
-import sys
-import os
-import sqlite3
-import uuid
 from copy import deepcopy
 
 
@@ -101,7 +92,7 @@ class Game:
                 'width':self.MAP_WIDTH,
                 'score': self.score,
                 'winner': self.winner}
-        return jsonify(data)
+        return data
     
 
     def move(self,kind,y,x,ny,nx):
