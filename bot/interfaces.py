@@ -7,7 +7,7 @@ class LocalInterface(AbstractInterface):
     """
     Interface locale entre le jeu et le bot.
     """
-    def __init__(self, game: Game, player: str, ):
+    def __init__(self, game: Game, player: str, ) -> None:
         super().__init__()
         self.game = game
         self.player = player
@@ -37,9 +37,9 @@ class LocalInterface(AbstractInterface):
         """
         Renvoie les informations disponibles.
         """
-        self.game.giveViewPlayer(self.player)
+        return self.game.giveViewPlayer(self.player)
      
-    def endturn(self):
+    def endturn(self) -> None:
         """
         Termine le tour.
         """
