@@ -112,14 +112,15 @@ class AbstractBot(ABC):
         self.width: int = 0
         self.height: int = 0
         self.gold: int = 0
-        self.mines: dict[position: int] = {}
         #Match data
         self.current: str = ""
         self.winner: str = ""
+        self.farmed: list[position] = []
         #Unit data
-        self.militaries: dict[position: int] = None
-        self.buildings: dict[position: int] = None
-        self.citizens: dict[position: int] = None
+        self.mines: np.ndarray = None
+        self.militaries: dict[str: np.ndarray] = None
+        self.buildings: dict[str: np.ndarray] = None
+        self.citizens: dict[str: np.ndarray] = None
         #Global data
         self.costs = {'B': 15, 'M': 10, 'C': 5}
 
@@ -127,7 +128,16 @@ class AbstractBot(ABC):
         """
         Joue un coup.
         """
+        if move == MoveType.FARM:
+            self.farmed.append(pos)
         self.interface.play(move, pos, unit)
+        self.reloadView()
+
+    def endturn(self) -> None:
+        """
+        Termine le tour.
+        """
+        self.interface.endturn()
 
     def getAvailableMove(self, pos: position, unit: str) -> list[MoveType]:
         """
@@ -137,7 +147,7 @@ class AbstractBot(ABC):
         if unit == 'C':
             if self.gold >= self.costs['B'] and self.buildings[self.ownplayer][pos] + self.buildings[self.advplayer][pos] == 0:
                 available.append(MoveType.BUILD_CAS)
-            if pos in self.mines:
+            if self.mines[pos] > 0 and pos not in self.farmed:
                 available.append(MoveType.FARM)
 
         if unit == 'B':
@@ -176,8 +186,8 @@ class AbstractBot(ABC):
             case _:
                 raise Exception(f"The unit {unit} does not exist.")
         return units
-    
-    def reloadView(self):
+
+    def reloadView(self) -> None:
         """
         Met à jour les informations du match.
         """
@@ -196,17 +206,20 @@ class AbstractBot(ABC):
                           'B': np.zeros(shape=(self.height, self.width), dtype=np.uint)}
         self.citizens = {'A': np.zeros(shape=(self.height, self.width), dtype=np.uint),
                          'B': np.zeros(shape=(self.height, self.width), dtype=np.uint)}
-        
-        unitmap = view['map']
+        self.mines = np.zeros(shape=(self.height, self.width), dtype=np.uint)
+
         for i in range(self.height):
             for j in range(self.width):
                 pos = (i, j)
-                unitcase = unitmap[i][j]
+                unitcase = view['map'][i][j]
                 if len(unitcase) == 0:
                     continue
+
                 # gold mine
-                if unitcase['G'] > 0:
-                    self.mines[pos] = unitcase['G']
+                if unitcase['G'] > 0 and self.mines[pos] == 0:
+                    self.mines[self.height-i-1, self.width-j-1] = unitcase['G']
+                self.mines[pos] = unitcase['G']
+
                 # own units
                 self.militaries[self.ownplayer][pos] = unitcase[self.ownplayer]['M']
                 self.buildings[self.ownplayer][pos] = unitcase[self.ownplayer]['B']
@@ -215,6 +228,14 @@ class AbstractBot(ABC):
                 self.militaries[self.advplayer][pos] = unitcase[self.advplayer]['M']
                 self.buildings[self.advplayer][pos] = unitcase[self.advplayer]['B']
                 self.citizens[self.advplayer][pos] = unitcase[self.advplayer]['C']
+
+        self.newturn = False
+
+    def startTurn(self) -> None: 
+        """
+        Commence le tour de jeu.
+        """
+        self.farmed.clear()
 
     @abstractmethod
     def playTurn(self):
@@ -230,5 +251,6 @@ class AbstractBot(ABC):
         while self.winner == "":
             self.reloadView()
             if self.ownplayer == self.current:
+                self.startTurn()
                 self.playTurn()
-        
+                self.endturn()
