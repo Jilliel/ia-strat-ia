@@ -30,11 +30,15 @@ class LocalMatch:
         while self.game.winner == "":
 
             self.player1.reloadView()
+            self.player1.startTurn()
             self.player1.playTurn()
+            self.player1.endturn()
 
             if self.game.winner != "":
                 break
             
             self.player2.reloadView()
+            self.player2.startTurn()
             self.player2.playTurn()
+            self.player2.endturn()
 
