@@ -11,19 +11,22 @@ class MoveType(Enum):
     Représente les différents types de coup possibles.
     """
 
+    # Null
+    NULL = 0
+
     # Gold
-    FARM = 0   
+    FARM = 1
     
     # Move
-    MOVE_UP = 1
-    MOVE_LEFT = 2
-    MOVE_DOWN = 3
-    MOVE_RIGHT = 4
-    
+    MOVE_UP = 2
+    MOVE_LEFT = 3
+    MOVE_DOWN = 4
+    MOVE_RIGHT = 5
+
     # Build
-    BUILD_CAS = 5
-    BUILD_CIT = 6
-    BUILD_MIL = 7
+    BUILD_CAS = 6
+    BUILD_CIT = 7
+    BUILD_MIL = 8
 
 
 class AbstractInterface(ABC):
@@ -74,6 +77,8 @@ class AbstractInterface(ABC):
         """
         y0, x0 = pos
         match move:
+            case MoveType.NULL:
+                return
             case MoveType.MOVE_DOWN:
                 newpos = y0+1, x0
                 self.move(pos, newpos, unit)
@@ -99,20 +104,24 @@ class AbstractInterface(ABC):
 
 
 class AbstractBot(ABC):
-    def __init__(self, interface):
+    def __init__(self, interface: AbstractInterface):
         self.interface: AbstractInterface = interface
+        self.ownplayer = self.interface.player
+        self.advplayer = 'A' if self.ownplayer == 'B' else 'B'
         #Board data
         self.width: int = 0
         self.height: int = 0
-        self.golds: dict[str: int] = None
+        self.gold: int = 0
         self.mines: dict[position: int] = {}
         #Match data
-        self.player: str = ""
+        self.current: str = ""
         self.winner: str = ""
         #Unit data
         self.militaries: dict[position: int] = None
         self.buildings: dict[position: int] = None
         self.citizens: dict[position: int] = None
+        #Global data
+        self.costs = {'B': 15, 'M': 10, 'C': 5}
 
     def play(self, move: MoveType, pos: position, unit: Optional[str] = None) -> None:
         """
@@ -120,23 +129,35 @@ class AbstractBot(ABC):
         """
         self.interface.play(move, pos, unit)
 
-    def getCurrentPlayer(self) -> str:
+    def getAvailableMove(self, pos: position, unit: str) -> list[MoveType]:
         """
-        Renvoie le joueur actuel
+        Renvoie la liste des coups autorisés pour une unité donnée.
         """
-        return self.player
-    
-    def getAdvPlayer(self) -> str:
-        """
-        Renvoie l'adversaire.
-        """
-        return 'A' if self.interface.player == 'B' else 'B'
-    
-    def getOwnPlayer(self) -> str:
-        """
-        Renvoie le joueur
-        """
-        return self.interface.player
+        available = [MoveType.NULL]
+        if unit == 'C':
+            if self.gold >= self.costs['B'] and self.buildings[self.ownplayer][pos] + self.buildings[self.advplayer][pos] == 0:
+                available.append(MoveType.BUILD_CAS)
+            if pos in self.mines:
+                available.append(MoveType.FARM)
+
+        if unit == 'B':
+            if self.gold >= self.costs['C']:
+                available.append(MoveType.BUILD_CIT)
+            if self.gold >= self.costs['M']:
+                available.append(MoveType.BUILD_MIL)
+
+        else:
+            y, x = pos
+            if y > 0:
+                available.append(MoveType.MOVE_UP)
+            if y < self.height - 1:
+                available.append(MoveType.MOVE_DOWN)
+            if x > 0:
+                available.append(MoveType.MOVE_LEFT)
+            if x < self.width - 1:
+                available.append(MoveType.MOVE_RIGHT)
+            
+        return available
     
     def getUnits(self, player: str, unit: str):
         """
@@ -161,13 +182,11 @@ class AbstractBot(ABC):
         Met à jour les informations du match.
         """
         view = self.interface.getView()
-        player = self.getOwnPlayer()
-        adversary = self.getAdvPlayer()
         #Match data
-        self.player = view['player']
+        self.current = view['player']
         self.winner = view['winner']
         #Board data
-        self.golds = view['gold']
+        self.gold = view['gold'][self.ownplayer]
         self.width = view['width']
         self.height = view['height']
         #Unit data
@@ -189,13 +208,13 @@ class AbstractBot(ABC):
                 if unitcase['G'] > 0:
                     self.mines[pos] = unitcase['G']
                 # own units
-                self.militaries[player][pos] = unitcase[player]['M']
-                self.buildings[player][pos] = unitcase[player]['B']
-                self.citizens[player][pos] = unitcase[player]['C']
+                self.militaries[self.ownplayer][pos] = unitcase[self.ownplayer]['M']
+                self.buildings[self.ownplayer][pos] = unitcase[self.ownplayer]['B']
+                self.citizens[self.ownplayer][pos] = unitcase[self.ownplayer]['C']
                 # adv units
-                self.militaries[adversary][pos] = unitcase[adversary]['M']
-                self.buildings[adversary][pos] = unitcase[adversary]['B']
-                self.citizens[adversary][pos] = unitcase[adversary]['C']
+                self.militaries[self.advplayer][pos] = unitcase[self.advplayer]['M']
+                self.buildings[self.advplayer][pos] = unitcase[self.advplayer]['B']
+                self.citizens[self.advplayer][pos] = unitcase[self.advplayer]['C']
 
     @abstractmethod
     def playTurn(self):
@@ -209,7 +228,7 @@ class AbstractBot(ABC):
         Joue un match
         """
         while self.winner == "":
-            self.reload()
-            if self.getOwnPlayer() == self.getCurrentPlayer():
+            self.reloadView()
+            if self.ownplayer == self.current:
                 self.playTurn()
         
