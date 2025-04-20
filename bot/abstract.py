@@ -150,7 +150,7 @@ class AbstractBot(ABC):
                 raise Exception(f"The unit {unit} does not exist.")
         return units
     
-    def reload(self):
+    def reloadView(self):
         """
         Met à jour les informations du match.
         """
