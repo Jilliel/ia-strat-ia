@@ -7,9 +7,10 @@ class LocalInterface(AbstractInterface):
     """
     Interface locale entre le jeu et le bot.
     """
-    def __init__(self, player: str, game: Game):
-        self.player = player
+    def __init__(self, game: Game, player: str, ):
+        super().__init__()
         self.game = game
+        self.player = player
 
     def build(self, pos: position, unit: str) -> None:
         """
@@ -32,8 +33,15 @@ class LocalInterface(AbstractInterface):
         assert self.player == self.game.curPlayer
         self.game.farm(*pos)
 
-    def view(self) -> dict:
+    def getView(self) -> dict:
         """
         Renvoie les informations disponibles.
         """
         self.game.giveViewPlayer(self.player)
+     
+    def endturn(self):
+        """
+        Termine le tour.
+        """
+        assert self.player == self.game.curPlayer
+        self.game.changeturn()
