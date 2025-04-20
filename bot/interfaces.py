@@ -56,7 +56,7 @@ class APIInterface(AbstractInterface):
     """
     def __init__(self, host: str, port: str, name: str) -> None:
         super().__init__()
-        self.adress = host + port
+        self.adress = host + ':' + port
         self.session = requests.Session()
         # Creates a player in the distant game
         url = f"{self.adress}/getToken/{name}"
