@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import scripts.utils as utils
 from typing import Optional
 from enum import Enum
 import numpy as np
@@ -109,9 +110,9 @@ class AbstractBot(ABC):
         self.player: str = ""
         self.winner: str = ""
         #Unit data
-        self.militaries: dict = None
-        self.buildings: dict = None
-        self.citizens: dict = None
+        self.militaries: dict[position: int] = None
+        self.buildings: dict[position: int] = None
+        self.citizens: dict[position: int] = None
 
     def getCurrentPlayer(self) -> str:
         """
@@ -130,6 +131,24 @@ class AbstractBot(ABC):
         Renvoie le joueur
         """
         return self.interface.player
+    
+    def getUnits(self, player: str, unit: str):
+        """
+        Renvoie un dictionnaire des unités 
+        """
+        match unit:
+            case 'M':
+                map = self.militaries[player] 
+                units = utils.nonzero(map)
+            case 'B':
+                map = self.buildings[player]
+                units = utils.nonzero(map)
+            case 'C':
+                map = self.citizens[player]
+                units = utils.nonzero(map)
+            case _:
+                raise Exception(f"The unit {unit} does not exist.")
+        return units
     
     def reload(self):
         """
