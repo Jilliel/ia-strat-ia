@@ -68,7 +68,7 @@ class AbstractInterface(ABC):
         """
         pass
     
-    def play(self, move: MoveType, pos: position, unit: Optional[str] = None) -> None:
+    def play(self, move: MoveType, pos: position, unit: Optional[str]) -> None:
         """
         Joue le coup passé en argument
         """
@@ -113,6 +113,12 @@ class AbstractBot(ABC):
         self.militaries: dict[position: int] = None
         self.buildings: dict[position: int] = None
         self.citizens: dict[position: int] = None
+
+    def play(self, move: MoveType, pos: position, unit: Optional[str] = None) -> None:
+        """
+        Joue un coup.
+        """
+        self.interface.play(move, pos, unit)
 
     def getCurrentPlayer(self) -> str:
         """
