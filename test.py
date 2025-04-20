@@ -1,7 +1,19 @@
-from scripts.match import LocalMatch
+from scripts.match import LocalMatch, APIMatch
 from bot.randy import RandomBot
 
-match = LocalMatch()
-match.bind(RandomBot, RandomBot)
-match.run()
-match.results()
+def test_local():
+    """
+    Teste un match en local.
+    """
+    match = LocalMatch()
+    match.bind(RandomBot, RandomBot)
+    match.run()
+    match.results()
+
+def test_distant():
+    """
+    Teste un match via l'API.
+    """
+    match = APIMatch(port="8080")
+    match.bind(RandomBot, RandomBot)
+    match.run()
