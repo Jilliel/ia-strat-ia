@@ -27,8 +27,18 @@ class LocalMatch:
         assert self.player1 is not None
         assert self.player2 is not None
 
-        while self.game.winner != "":
+        print(self.player1.ownplayer)
+        print(self.player2.ownplayer)
+        print(self.game.curPlayer)
+
+        while self.game.winner == "":
+
             self.player1.reloadView()
             self.player1.playTurn()
+
+            if self.game.winner != "":
+                break
+            
             self.player2.reloadView()
             self.player2.playTurn()
+
