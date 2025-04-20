@@ -23,8 +23,11 @@ class RandomBot(AbstractBot):
         while len(allunits) > 0:
             pos, unit = allunits.pop()
             moves = self.getAvailableMove(pos=pos, unit=unit)
-            self.play(move=choice(moves),
-                      pos=pos,
-                      unit=unit)
-        
+            move = choice(moves)
+            try:
+                self.play(move=move,
+                        pos=pos,
+                        unit=unit)
+            except Exception:
+                print(f"Pos: {pos}, Unit: {unit}, MoveType: {move} went wrong")
         self.interface.endturn()
