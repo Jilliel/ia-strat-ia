@@ -9,7 +9,7 @@ class RandomBot(AbstractBot):
         """
         Joue le tour.
         """
-        
+
         # On récupère toutes les unités
         allunits = []
         for unit in ('C', 'M', 'B'):
@@ -27,4 +27,4 @@ class RandomBot(AbstractBot):
                       pos=pos,
                       unit=unit)
         
-        
+        self.interface.endturn()
