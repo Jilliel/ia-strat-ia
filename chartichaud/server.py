@@ -11,10 +11,13 @@ import os
 import sqlite3
 import uuid
 from copy import deepcopy
+import logging
 import time
-from game import Game
+from chartichaud.game import Game
 
 app = Flask(__name__, static_url_path='', static_folder='static')
+app.logger.disabled = True
+logging.getLogger("werkzeug").disabled=True
 
 #####  AUTH PARAMETERS #####
 
