@@ -206,7 +206,9 @@ class AbstractBot(ABC):
                           'B': np.zeros(shape=(self.height, self.width), dtype=np.uint)}
         self.citizens = {'A': np.zeros(shape=(self.height, self.width), dtype=np.uint),
                          'B': np.zeros(shape=(self.height, self.width), dtype=np.uint)}
-        self.mines = np.zeros(shape=(self.height, self.width), dtype=np.uint)
+        
+        if self.mines is None:
+            self.mines = np.zeros(shape=(self.height, self.width), dtype=np.uint)
 
         for i in range(self.height):
             for j in range(self.width):
@@ -228,8 +230,6 @@ class AbstractBot(ABC):
                 self.militaries[self.advplayer][pos] = unitcase[self.advplayer]['M']
                 self.buildings[self.advplayer][pos] = unitcase[self.advplayer]['B']
                 self.citizens[self.advplayer][pos] = unitcase[self.advplayer]['C']
-
-        self.newturn = False
 
     def startTurn(self) -> None: 
         """
