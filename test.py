@@ -19,5 +19,5 @@ def test_distant():
     match.run()
 
 if __name__ == "__main__":
-    #test_local()
-    test_distant()
+    test_local()
+    #test_distant()
