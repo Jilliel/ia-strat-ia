@@ -56,11 +56,11 @@ class APIInterface(AbstractInterface):
     """
     def __init__(self, host: str, port: str, name: str) -> None:
         super().__init__()
-        self.adress = host + ':' + port
+        self.adress = f"http://{host}:{port}"
         self.session = requests.Session()
         # Creates a player in the distant game
         url = f"{self.adress}/getToken/{name}"
-        connexion = json.loads(self.session.get(url))
+        connexion = self.pull(url)
         # Gets the data
         self.token = connexion['token']
         self.player = connexion['player']
