@@ -17,3 +17,7 @@ def test_distant():
     match = APIMatch(port="8080")
     match.bind(RandomBot, RandomBot)
     match.run()
+
+if __name__ == "__main__":
+    #test_local()
+    test_distant()
