@@ -1,7 +1,7 @@
 from bot.interfaces import LocalInterface, APIInterface
 from bot.abstract import AbstractBot
 
-from chartichaud.match import launchServer
+from chartichaud.server import launchServer
 from chartichaud.game import Game
 
 from threading import Thread
