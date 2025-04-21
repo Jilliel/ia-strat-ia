@@ -249,8 +249,8 @@ class AbstractBot(ABC):
         Joue un match
         """
         while self.winner == "":
-            self.reloadView()
             if self.ownplayer == self.current:
                 self.startTurn()
                 self.playTurn()
                 self.endturn()
+            self.reloadView()
